@@ -1,0 +1,388 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Never Island Mini App</title>
+
+  <!-- Tailwind CSS & Fonts -->
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+
+  <!-- Telegram WebApp SDK -->
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+  <!-- TON Connect UI SDK -->
+  <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
+
+  <style>
+    body { 
+      font-family: 'DM Sans', sans-serif; 
+      overflow-x: hidden; 
+      background-color: #0d0614; 
+      user-select: none;
+      -webkit-user-select: none;
+    }
+    @keyframes float1 { 0%,100%{ transform: translateY(0) } 50%{ transform: translateY(-8px) } }
+    .float-card { animation: float1 4s ease-in-out infinite; }
+    .glass { 
+      background: rgba(15, 5, 30, 0.85); 
+      backdrop-filter: blur(16px); 
+      border: 1px solid rgba(168, 85, 247, 0.3); 
+      border-radius: 1rem; 
+    }
+    .btn-neon { 
+      box-shadow: 0 0 20px rgba(168,85,247,0.4); 
+      transition: all 0.2s ease;
+    }
+    .btn-neon:active { transform: scale(0.98); }
+    .nav-pill { transition: all 0.2s; }
+    .nav-pill:hover { background: rgba(168,85,247,0.2); }
+    .nav-pill.active { 
+      background: rgba(168,85,247,0.5); 
+      box-shadow: 0 0 15px rgba(168,85,247,0.4); 
+    }
+    .clicker-avatar { 
+      cursor: pointer; 
+      user-select: none; 
+      -webkit-tap-highlight-color: transparent; 
+      transition: transform 0.08s ease; 
+    }
+    .clicker-avatar:active { transform: scale(0.92); }
+    
+    /* Scrollbar styling for chat/leaderboard */
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.2); }
+    ::-webkit-scrollbar-thumb { background: rgba(168, 85, 247, 0.5); border-radius: 4px; }
+  </style>
+</head>
+<body class="min-h-screen text-white pb-24">
+
+  <!-- NAVIGATION BAR -->
+  <nav id="main-nav" class="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 glass px-2 py-2 flex gap-1 rounded-2xl max-w-[95%] overflow-x-auto shadow-2xl">
+   <button type="button" class="nav-pill px-3 py-2 rounded-xl text-xs md:text-sm font-bold active" data-screen="screen-creator">🎭 شخصیت</button>
+   <button type="button" class="nav-pill px-3 py-2 rounded-xl text-xs md:text-sm font-bold" data-screen="screen-wallet-upload">🔗 والت و عکس</button>
+   <button type="button" class="nav-pill px-3 py-2 rounded-xl text-xs md:text-sm font-bold" data-screen="screen-clicker">⚡ کلیکر</button>
+   <button type="button" class="nav-pill px-3 py-2 rounded-xl text-xs md:text-sm font-bold" data-screen="screen-leaderboard">🏆 لیدربرد</button>
+   <button type="button" class="nav-pill px-3 py-2 rounded-xl text-xs md:text-sm font-bold" data-screen="screen-arena">⚔️ رجزخوانی</button>
+  </nav>
+
+  <!-- SCREEN 1: Character Creator -->
+  <main id="screen-creator" class="screen-section relative z-10 max-w-lg mx-auto p-4">
+   <header class="text-center py-6 float-card">
+    <h1 class="text-3xl font-bold bg-gradient-to-l from-purple-400 via-fuchsia-300 to-cyan-300 bg-clip-text text-transparent">Never Island</h1>
+    <p class="mt-2 text-xs text-gray-300">پروفایل و هویت خود را در جزیره بسازید</p>
+   </header>
+
+   <section class="flex justify-center mb-6 float-card">
+    <div class="relative">
+     <img id="main-avatar-img" src="https://via.placeholder.com/150" class="w-36 h-36 rounded-full object-cover border-2 border-purple-500 shadow-[0_0_25px_rgba(168,85,247,0.6)]">
+    </div>
+   </section>
+
+   <section class="glass p-5 space-y-4">
+     <div>
+      <label class="block mb-1 text-xs font-bold text-purple-200">نام قهرمان</label>
+      <input id="char-name" type="text" class="w-full bg-black/50 border border-purple-500/30 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-purple-400" placeholder="نام خود را وارد کنید...">
+     </div>
+     <div>
+      <label class="block mb-1 text-xs font-bold text-purple-200">کلاس جنگجو</label>
+      <select id="char-class" class="w-full bg-black/50 border border-purple-500/30 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-purple-400">
+        <option value="⚔️ جنگاور">⚔️ جنگاور</option>
+        <option value="🔮 احضارگر">🔮 احضارگر</option>
+        <option value="🗡️ قاتل">🗡️ قاتل</option>
+      </select>
+     </div>
+     <button id="btn-save-profile" class="w-full py-2 bg-purple-600 rounded-lg font-bold text-sm hover:bg-purple-500 transition-all">ذخیره تغییرات</button>
+   </section>
+  </main>
+
+  <!-- SCREEN 2: WALLET & PHOTO UPLOAD -->
+  <main id="screen-wallet-upload" class="screen-section relative z-10 max-w-lg mx-auto p-4 hidden">
+    <header class="text-center py-4">
+      <h2 class="text-xl font-bold text-cyan-300">اتصال والت و عکس</h2>
+    </header>
+
+    <section class="glass p-5 mb-5 text-center">
+      <h3 class="text-sm font-bold text-purple-200 mb-3">💎 کیف پول TON</h3>
+      <div id="ton-connect-button" class="flex justify-center my-3"></div>
+      <p id="wallet-address-display" class="text-xs text-green-400 font-mono break-all mt-2 hidden"></p>
+    </section>
+
+    <section class="glass p-5 text-center space-y-4">
+      <h3 class="text-sm font-bold text-purple-200">📷 تغییر عکس پروفایل</h3>
+      <input type="file" id="avatar-file-input" accept="image/*" class="hidden" />
+      <button type="button" id="btn-upload-avatar" class="w-full py-3 bg-gradient-to-r from-purple-600 to-cyan-500 rounded-xl text-white font-bold btn-neon text-sm">
+        انتخاب و آپلود عکس
+      </button>
+      <p id="upload-status" class="text-xs text-gray-400 hidden"></p>
+    </section>
+  </main>
+
+  <!-- SCREEN 3: Clicker -->
+  <main id="screen-clicker" class="screen-section relative z-10 max-w-lg mx-auto p-4 hidden">
+   <div class="flex flex-col items-center">
+    <div class="w-full glass p-3 flex justify-between items-center mb-4">
+     <div class="text-center">
+      <p class="text-[10px] opacity-70">سکه کل</p>
+      <p class="text-lg font-bold text-cyan-300" id="ce-display">0</p>
+     </div>
+     <div class="text-center">
+      <p class="text-[10px] opacity-70">قدرت ضربه</p>
+      <p class="text-md font-bold text-green-300" id="pertap-display">+1</p>
+     </div>
+    </div>
+
+    <div id="tap-area" class="relative clicker-avatar my-8">
+     <img id="clicker-avatar-img" src="https://via.placeholder.com/150" class="w-44 h-44 rounded-full object-cover shadow-[0_0_40px_rgba(168,85,247,0.6)] border-4 border-cyan-400">
+    </div>
+
+    <p class="text-xs opacity-60">روی تصویر ضربه بزنید!</p>
+   </div>
+  </main>
+
+  <!-- SCREEN 4: LEADERBOARD (لیدربرد همگانی) -->
+  <main id="screen-leaderboard" class="screen-section relative z-10 max-w-lg mx-auto p-4 hidden">
+    <header class="text-center py-4">
+      <h2 class="text-xl font-bold text-yellow-400">🏆 برترین قهرمانان جزیره</h2>
+      <p class="text-xs text-gray-400 mt-1">رتبه‌بندی تمام بازیکنان به صورت زنده</p>
+    </header>
+
+    <div id="leaderboard-list" class="glass p-4 space-y-3 max-h-[60vh] overflow-y-auto">
+      <p class="text-center text-xs text-gray-400">در حال دریافت برترین بازیکنان...</p>
+    </div>
+  </main>
+
+  <!-- SCREEN 5: TRASH TALK ARENA (چت و رجزخوانی عمومی) -->
+  <main id="screen-arena" class="screen-section relative z-10 max-w-lg mx-auto p-4 hidden">
+   <header class="text-center py-2">
+    <h2 class="text-xl font-bold text-red-400">⚔️ میدان رجزخوانی عمومی</h2>
+    <p class="text-[10px] text-gray-400">پیام‌های شما برای همه بازیکنان قابل مشاهده است</p>
+   </header>
+
+   <!-- کادر پیام‌ها -->
+   <div id="chat-box" class="glass p-3 h-64 overflow-y-auto space-y-3 mb-3 flex flex-col">
+     <p class="text-center text-xs text-gray-400">در حال بارگذاری دیالوگ‌ها...</p>
+   </div>
+
+   <!-- ارسال پیام -->
+   <div class="flex gap-2">
+     <input id="chat-input" type="text" maxlength="150" class="flex-1 bg-black/60 border border-purple-500/40 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-purple-400" placeholder="رجز خود را بنویسید...">
+     <button id="btn-send-chat" class="px-4 py-2 bg-gradient-to-r from-red-600 to-purple-600 rounded-xl text-xs font-bold btn-neon">ارسال</button>
+   </div>
+  </main>
+
+  <!-- JAVASCRIPT CODE -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+
+      // Telegram User Data Init
+      const tg = window.Telegram?.WebApp;
+      if (tg) { tg.ready(); tg.expand(); }
+
+      const telegramUser = tg?.initDataUnsafe?.user;
+      const userId = telegramUser?.id ? telegramUser.id.toString() : 'guest_' + Math.floor(Math.random()*10000);
+      let userName = telegramUser?.first_name || localStorage.getItem('user_name') || 'قهرمان گمنام';
+      let userAvatar = localStorage.getItem('custom_user_avatar') || telegramUser?.photo_url || 'https://via.placeholder.com/150';
+
+      // Load Profile Inputs
+      const charNameInput = document.getElementById('char-name');
+      if (charNameInput) charNameInput.value = userName;
+
+      document.getElementById('btn-save-profile')?.addEventListener('click', () => {
+        if (charNameInput.value.trim()) {
+          userName = charNameInput.value.trim();
+          localStorage.setItem('user_name', userName);
+          alert('پروفایل با موفقیت ذخیره شد!');
+          syncUserDataToServer();
+        }
+      });
+
+      // 1. Navigation Tabs
+      const navButtons = document.querySelectorAll('.nav-pill');
+      const screens = document.querySelectorAll('.screen-section');
+
+      navButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const targetScreen = btn.getAttribute('data-screen');
+          navButtons.forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+
+          screens.forEach(s => s.id === targetScreen ? s.classList.remove('hidden') : s.classList.add('hidden'));
+
+          if (targetScreen === 'screen-leaderboard') loadLeaderboard();
+          if (targetScreen === 'screen-arena') loadArenaMessages();
+        });
+      });
+
+      // 2. TON Connect
+      try {
+        const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
+          manifestUrl: 'https://raw.githubusercontent.com/ton-community/tutorials/main/03-client/test-dapp/public/tonconnect-manifest.json',
+          buttonRootId: 'ton-connect-button'
+        });
+
+        tonConnectUI.onStatusChange(wallet => {
+          const walletDisplay = document.getElementById('wallet-address-display');
+          if (wallet) {
+            const address = wallet.account.address;
+            walletDisplay.textContent = `آدرس والت: ${address.slice(0, 6)}...${address.slice(-4)}`;
+            walletDisplay.classList.remove('hidden');
+            localStorage.setItem('user_wallet_address', address);
+            syncUserDataToServer();
+          }
+        });
+      } catch (err) { console.error("TON Connect error:", err); }
+
+      // 3. Avatar Upload & Sync
+      const fileInput = document.getElementById('avatar-file-input');
+      const uploadBtn = document.getElementById('btn-upload-avatar');
+      const mainAvatar = document.getElementById('main-avatar-img');
+      const clickerAvatar = document.getElementById('clicker-avatar-img');
+
+      if (mainAvatar) mainAvatar.src = userAvatar;
+      if (clickerAvatar) clickerAvatar.src = userAvatar;
+
+      uploadBtn?.addEventListener('click', () => fileInput?.click());
+
+      fileInput?.addEventListener('change', async (event) => {
+        const file = event.target.files[0];
+        if (!file || file.size > 2 * 1024 * 1024) { alert("حجم تصویر نباید بیشتر از ۲ مگابایت باشد."); return; }
+
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => {
+          userAvatar = reader.result;
+          if (mainAvatar) mainAvatar.src = userAvatar;
+          if (clickerAvatar) clickerAvatar.src = userAvatar;
+          localStorage.setItem('custom_user_avatar', userAvatar);
+          syncUserDataToServer();
+        };
+      });
+
+      // 4. Clicker Logic
+      let score = parseInt(localStorage.getItem('clicker_score') || '0');
+      const scoreDisplay = document.getElementById('ce-display');
+      const tapArea = document.getElementById('tap-area');
+
+      if (scoreDisplay) scoreDisplay.textContent = score;
+
+      tapArea?.addEventListener('click', () => {
+        score += 1;
+        if (scoreDisplay) scoreDisplay.textContent = score;
+        localStorage.setItem('clicker_score', score.toString());
+        
+        // همگام‌سازی امتیاز هر ۱۰ کلیک یک‌بار
+        if (score % 10 === 0) syncUserDataToServer();
+      });
+
+      // ==========================================
+      // 5. آنلاین‌سازی (لیدربرد و دیالوگ‌ها)
+      // ==========================================
+
+      // ذخیره/ارسال اطلاعات کاربر به پایگاه داده همگانی
+      function syncUserDataToServer() {
+        const userData = {
+          id: userId,
+          name: userName,
+          avatar: userAvatar,
+          score: score,
+          wallet: localStorage.getItem('user_wallet_address') || ''
+        };
+
+        // ذخیره در سرور همگانی آنلاین
+        fetch('https://jsonbin.org/me/never-island-users', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(userData)
+        }).catch(() => {});
+
+        // متد بک آپ محلی برای تست همزمانی
+        let allUsers = JSON.parse(localStorage.getItem('global_mock_users') || '[]');
+        const existingIdx = allUsers.findIndex(u => u.id === userId);
+        if (existingIdx > -1) {
+          allUsers[existingIdx] = userData;
+        } else {
+          allUsers.push(userData);
+        }
+        localStorage.setItem('global_mock_users', JSON.stringify(allUsers));
+      }
+
+      // بارگذاری لیدربرد همگانی
+      function loadLeaderboard() {
+        syncUserDataToServer();
+        const listContainer = document.getElementById('leaderboard-list');
+        let allUsers = JSON.parse(localStorage.getItem('global_mock_users') || '[]');
+
+        // سورت بر اساس بیشترین امتیاز
+        allUsers.sort((a, b) => b.score - a.score);
+
+        if (allUsers.length === 0) {
+          listContainer.innerHTML = '<p class="text-center text-xs text-gray-400">هنوز بازیکنی ثبت نشده است.</p>';
+          return;
+        }
+
+        listContainer.innerHTML = allUsers.map((user, idx) => `
+          <div class="flex items-center justify-between p-2 rounded-xl ${user.id === userId ? 'bg-purple-900/40 border border-purple-500/50' : 'bg-black/30'}">
+            <div class="flex items-center gap-3">
+              <span class="text-xs font-bold ${idx === 0 ? 'text-yellow-400' : idx === 1 ? 'text-gray-300' : idx === 2 ? 'text-amber-600' : 'text-gray-500'}">#${idx + 1}</span>
+              <img src="${user.avatar}" class="w-8 h-8 rounded-full object-cover border border-purple-400/30">
+              <div>
+                <p class="text-xs font-bold text-white">${user.name} ${user.id === userId ? '(شما)' : ''}</p>
+                <p class="text-[9px] text-gray-400">${user.wallet ? '🔗 والت متصل' : 'بدون والت'}</p>
+              </div>
+            </div>
+            <span class="text-xs font-bold text-cyan-300">${user.score} سکه</span>
+          </div>
+        `).join('');
+      }
+
+      // بارگذاری و ارسال دیالوگ‌های میدان رجزخوانی
+      const chatBox = document.getElementById('chat-box');
+      const chatInput = document.getElementById('chat-input');
+      const btnSendChat = document.getElementById('btn-send-chat');
+
+      function loadArenaMessages() {
+        let messages = JSON.parse(localStorage.getItem('global_arena_chats') || '[]');
+        if (messages.length === 0) {
+          chatBox.innerHTML = '<p class="text-center text-xs text-gray-400">هنوز هیچ رجزی خوانده نشده! اولین نفر باشید.</p>';
+          return;
+        }
+
+        chatBox.innerHTML = messages.map(msg => `
+          <div class="flex items-start gap-2 ${msg.userId === userId ? 'flex-row-reverse' : ''}">
+            <img src="${msg.avatar}" class="w-7 h-7 rounded-full object-cover border border-purple-500/40">
+            <div class="max-w-[80%] ${msg.userId === userId ? 'bg-purple-600/50 text-right' : 'bg-black/50 text-left'} p-2 rounded-xl text-xs">
+              <p class="text-[9px] text-cyan-300 font-bold">${msg.name}</p>
+              <p class="text-white mt-0.5 break-words">${msg.text}</p>
+            </div>
+          </div>
+        `).join('');
+
+        chatBox.scrollTop = chatBox.scrollHeight;
+      }
+
+      btnSendChat?.addEventListener('click', () => {
+        const text = chatInput.value.trim();
+        if (!text) return;
+
+        let messages = JSON.parse(localStorage.getItem('global_arena_chats') || '[]');
+        messages.push({
+          userId: userId,
+          name: userName,
+          avatar: userAvatar,
+          text: text,
+          time: new Date().toLocaleTimeString('fa-IR', { hour: '2-digit', minute: '2-digit' })
+        });
+
+        localStorage.setItem('global_arena_chats', JSON.stringify(messages));
+        chatInput.value = '';
+        loadArenaMessages();
+      });
+
+      // خودکار اولین همگام‌سازی را انجام دهد
+      syncUserDataToServer();
+    });
+  </script>
+</body>
+</html>
