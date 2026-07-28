@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Never Island MiniApp</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+  <style>
+    body { font-family: 'DM Sans', sans-serif; overflow-x: hidden; background: #0a051b; }
+    .glass { background: rgba(15, 5, 30, 0.7); backdrop-filter: blur(16px); border: 1px solid rgba(168, 85, 247, 0.3); border-radius: 1rem; }
+    .btn-neon { box-shadow: 0 0 15px rgba(168,85,247,0.4); }
+    .nav-pill.active { background: rgba(168,85,247,0.5); box-shadow: 0 0 15px rgba(168,85,247,0.4); }
+  </style>
+</head>
+<body class="min-h-screen text-white">
+
+  <!-- NAVIGATION BAR -->
+  <nav id="main-nav" class="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 glass px-3 py-2 flex gap-2 rounded-2xl">
+    <button onclick="showScreen('screen-creator')" class="nav-pill px-3 py-1.5 rounded-xl text-xs font-bold active">شخصیت</button>
+    <button onclick="showScreen('screen-clicker')" class="nav-pill px-3 py-1.5 rounded-xl text-xs font-bold">کلیکر</button>
+    <button onclick="showScreen('screen-leaderboard')" class="nav-pill px-3 py-1.5 rounded-xl text-xs font-bold">لیدربورد</button>
+    <button onclick="showScreen('screen-admin')" class="nav-pill px-3 py-1.5 rounded-xl text-xs font-bold bg-purple-900/50">مدیریت</button>
+  </nav>
+
+  <!-- SCREEN 1: Character Creator -->
+  <main id="screen-creator" class="screen-page max-w-lg mx-auto p-4 pb-24">
+    <header class="text-center py-4">
+      <h1 class="text-2xl font-bold text-purple-300">Never Island</h1>
+      <p class="text-xs text-gray-400">ساخت و تنظیمات شخصیت</p>
+    </header>
+    <section class="glass p-4 space-y-3">
+      <div>
+        <label class="block text-xs mb-1">نام شخصیت:</label>
+        <input id="char-name" type="text" value="قهرمان آریا" class="w-full bg-black/40 border border-purple-500/30 rounded px-3 py-1.5 text-sm">
+      </div>
+      <button onclick="saveCharacter()" class="w-full py-2 bg-purple-600 rounded-lg font-bold btn-neon text-sm">ذخیره شخصیت</button>
+    </section>
+  </main>
+
+  <!-- SCREEN 2: Clicker -->
+  <main id="screen-clicker" class="screen-page max-w-lg mx-auto p-4 pb-24 hidden">
+    <div class="glass p-4 text-center mb-4">
+      <p class="text-xs text-gray-400">امتیاز کل (CE):</p>
+      <h2 id="ce-display" class="text-3xl font-bold text-cyan-300">0</h2>
+    </div>
+    <div class="flex justify-center my-6">
+      <button onclick="handleTap()" class="w-40 h-40 bg-gradient-to-tr from-purple-700 to-pink-600 rounded-full font-bold text-xl shadow-lg active:scale-95 transition-all">TAP!</button>
+    </div>
+  </main>
+
+  <!-- SCREEN 3: Online Leaderboard -->
+  <main id="screen-leaderboard" class="screen-page max-w-lg mx-auto p-4 pb-24 hidden">
+    <h2 class="text-xl font-bold text-center mb-4 text-cyan-300">🏆 لیدربورد برترین پلیرها</h2>
+    <div class="glass p-4">
+      <div id="leaderboard-list" class="space-y-2 text-sm">
+        <p class="text-center text-gray-400">در حال دریافت اطلاعات...</p>
+      </div>
+    </div>
+  </main>
+
+  <!-- SCREEN 4: Admin Panel (پنل مدیریت) -->
+  <main id="screen-admin" class="screen-page max-w-lg mx-auto p-4 pb-24 hidden">
+    <h2 class="text-xl font-bold text-center mb-4 text-red-400">⚙️ پنل مدیریت مینی‌اپ</h2>
+    <div class="glass p-4 space-y-4">
+      <div>
+        <label class="block text-xs mb-1">حداکثر انرژی پایه:</label>
+        <input id="admin-max-energy" type="number" class="w-full bg-black/40 border border-purple-500/30 rounded px-3 py-1.5 text-sm" placeholder="500">
+      </div>
+      <div>
+        <label class="block text-xs mb-1">نرخ بازآفرینی انرژی در ثانیه:</label>
+        <input id="admin-recharge-rate" type="number" class="w-full bg-black/40 border border-purple-500/30 rounded px-3 py-1.5 text-sm" placeholder="1">
+      </div>
+      <div>
+        <label class="block text-xs mb-1">امتیاز پایه هر کلیک (CE):</label>
+        <input id="admin-ce-tap" type="number" class="w-full bg-black/40 border border-purple-500/30 rounded px-3 py-1.5 text-sm" placeholder="1">
+      </div>
+      <button onclick="saveAdminSettings()" class="w-full py-2 bg-red-600 hover:bg-red-500 rounded-lg font-bold text-sm">اعمال تنظیمات جدید</button>
+      <p id="admin-msg" class="text-xs text-green-400 text-center hidden"></p>
+    </div>
+  </main>
+
+  <script>
+    let ce = 0;
+    let username = "user_" + Math.floor(Math.random() * 1000);
+
+    function showScreen(screenId) {
+      document.querySelectorAll('.screen-page').forEach(s => s.classList.add('hidden'));
+      document.getElementById(screenId).classList.remove('hidden');
+      if (screenId === 'screen-leaderboard') fetchLeaderboard();
+    }
+
+    function handleTap() {
+      ce += 1;
+      document.getElementById('ce-display').innerText = ce;
+      syncData();
+    }
+
+    async function syncData() {
+      const charName = document.getElementById('char-name').value;
+      await fetch('/api/player/sync', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, ce, characterName: charName })
+      });
+    }
+
+    async function fetchLeaderboard() {
+      const listEl = document.getElementById('leaderboard-list');
+      try {
+        const res = await fetch('/api/leaderboard');
+        const data = await res.json();
+        listEl.innerHTML = data.map((item, idx) => `
+          <div class="flex justify-between items-center p-2 bg-black/30 rounded-lg">
+            <span>#${idx + 1} ${item.characterName || item.username}</span>
+            <span class="font-bold text-cyan-300">${item.ce} CE</span>
+          </div>
+        `).join('');
+      } catch (e) {
+        listEl.innerHTML = '<p class="text-red-400 text-center">خطا در بارگذاری لیدربورد</p>';
+      }
+    }
+
+    async function saveAdminSettings() {
+      const maxEnergyBase = document.getElementById('admin-max-energy').value;
+      const energyRechargeRate = document.getElementById('admin-recharge-rate').value;
+      const cePerTapBase = document.getElementById('admin-ce-tap').value;
+
+      const res = await fetch('/api/admin/settings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ maxEnergyBase, energyRechargeRate, cePerTapBase })
+      });
+      const data = await res.json();
+      if(data.success) {
+        const msg = document.getElementById('admin-msg');
+        msg.innerText = "تنظیمات با موفقیت اعمال شد!";
+        msg.classList.remove('hidden');
+      }
+    }
+  </script>
+</body>
+</html>
