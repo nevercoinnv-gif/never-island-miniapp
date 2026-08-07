@@ -1,0 +1,18 @@
+{
+  "name": "never-island-miniapp",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview --port 5173"
+  },
+  "devDependencies": {
+    "vite": "^5.0.0",
+    "wait-on": "^9.1.0"
+  },
+  "dependencies": {
+    "playwright": "^1.62.1"
+  }
+}

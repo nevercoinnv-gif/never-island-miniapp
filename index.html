@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head><script>window["codeletBootstrap"]=JSON.parse('{"A":"A","B":"20260727-05-609cca1"}');</script><script src="/_sdk/728f18890c0241e5.telemetry_sdk.js" integrity="sha512-cMy0xd29wRWs8nyV19fws/+pwQ0u98A3fewCalZ/OWXQXUwzmcx7jKUuZ511uTJlUe1gP0Undii48zuekOylMw=="></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Never Island</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&amp;display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+  <style>
+    body { font-family: 'DM Sans', sans-serif; overflow-x: hidden; background-color: #0a0310; background-image: radial-gradient(circle at 20% 10%, rgba(124,58,237,0.18), transparent 8%), radial-gradient(circle at 85% 80%, rgba(6,182,212,0.1), transparent 12%), url('/assets/bg-nebula.svg'); background-size: cover, cover, cover; background-repeat: no-repeat; background-attachment: fixed; color: #f8f7ff; }
+    body::before { content: ''; position: fixed; inset: 0; background: linear-gradient(180deg, rgba(10,3,16,0.7), rgba(5,2,12,0.9)); pointer-events: none; }
+    .canva-text { text-shadow: 0 0 18px rgba(167,139,250,0.28); }
+    .canva-button { background: linear-gradient(135deg, rgba(79,70,229,0.9), rgba(129,140,248,0.9)); box-shadow: 0 14px 40px rgba(99,102,241,0.18); }
+    .glass { background: rgba(10, 4, 22, 0.68); backdrop-filter: blur(20px); border: 1px solid rgba(168, 85, 247, 0.2); box-shadow: 0 20px 70px rgba(15, 5, 30, 0.35); border-radius: 1rem; }
+    .nav-pill { background: rgba(18, 6, 34, 0.82); border: 1px solid rgba(142, 86, 255, 0.1); }
+    .nav-pill.active { background: rgba(99, 102, 241, 0.28); }
+    .nav-pill:hover { transform: translateY(-1px); }
+    .gallery-chip { cursor: pointer; border: 1px solid rgba(167,139,250,0.2); }
+    .gallery-chip:hover { transform: translateY(-2px); }
+    .disabled-text { opacity: 0.6; }
+    @keyframes float1 { 0%,100%{ transform: translateY(0) } 50%{ transform: translateY(-12px) } }
+    @keyframes float2 { 0%,100%{ transform: translateY(0) rotate(0deg) } 50%{ transform: translateY(-8px) rotate(1deg) } }
+    @keyframes twinkle { 0%,100%{ opacity:0.3 } 50%{ opacity:1 } }
+    @keyframes pulse-glow { 0%,100%{ box-shadow: 0 0 15px rgba(168,85,247,0.4) } 50%{ box-shadow: 0 0 35px rgba(168,85,247,0.8) } }
+    @keyframes drift { 0%{ transform: translateY(0) translateX(0) } 50%{ transform: translateY(-20px) translateX(10px) } 100%{ transform: translateY(0) translateX(0) } }
+    @keyframes tap-pulse { 0%{ transform: scale(1) } 50%{ transform: scale(0.92) } 100%{ transform: scale(1) } }
+    @keyframes float-up { 0%{ opacity:1; transform: translateY(0) scale(1) } 100%{ opacity:0; transform: translateY(-80px) scale(1.5) } }
+    @keyframes particle-burst { 0%{ opacity:1; transform: translate(0,0) scale(1) } 100%{ opacity:0; transform: translate(var(--px),var(--py)) scale(0) } }
+    @keyframes orbit { 0%{ transform: rotate(0deg) translateX(var(--orbit-r)) rotate(0deg) } 100%{ transform: rotate(360deg) translateX(var(--orbit-r)) rotate(-360deg) } }
+    .float-card { animation: float1 4s ease-in-out infinite; }
+    .float-card:nth-child(even) { animation: float2 5s ease-in-out infinite; }
+    .glass { background: rgba(15, 5, 30, 0.6); backdrop-filter: blur(16px); border: 1px solid rgba(168, 85, 247, 0.3); border-radius: 1rem; }
+    .glow-border { border: 1px solid rgba(168,85,247,0.5); box-shadow: 0 0 20px rgba(168,85,247,0.3); }
+    .avatar-glow { animation: pulse-glow 3s ease-in-out infinite; }
+    .stat-bar { background: rgba(88,28,135,0.3); border: 1px solid rgba(168,85,247,0.3); }
+    .btn-neon { box-shadow: 0 0 20px rgba(168,85,247,0.5), inset 0 0 20px rgba(168,85,247,0.1); }
+    .btn-neon:hover { box-shadow: 0 0 40px rgba(168,85,247,0.8), inset 0 0 30px rgba(168,85,247,0.2); }
+    .star { position: fixed; width: 2px; height: 2px; background: white; border-radius: 50%; animation: twinkle var(--dur) ease-in-out infinite; pointer-events: none; }
+    .nebula-orb { position: fixed; border-radius: 50%; filter: blur(60px); opacity: 0.15; pointer-events: none; animation: drift 12s ease-in-out infinite; }
+    .tap-anim { animation: tap-pulse 0.15s ease-out; }
+    .ce-float { position: absolute; pointer-events: none; animation: float-up 0.8s ease-out forwards; font-weight: bold; color: #67e8f9; font-size: 1.5rem; text-shadow: 0 0 10px rgba(6,182,212,0.8); }
+    .particle { position: absolute; width: 6px; height: 6px; border-radius: 50%; background: #a855f7; pointer-events: none; animation: particle-burst 0.6s ease-out forwards; }
+    .clicker-avatar { cursor: pointer; user-select: none; -webkit-tap-highlight-color: transparent; transition: transform 0.1s; }
+    .clicker-avatar:active { transform: scale(0.93); }
+    .orbit-el { position: absolute; top: 50%; left: 50%; width: 20px; height: 20px; margin: -10px; animation: orbit var(--orbit-dur) linear infinite; --orbit-r: 120px; }
+
+.upgrade-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+    .nav-pill { transition: all 0.2s; }
+    .nav-pill:hover { background: rgba(168,85,247,0.3); }
+    .nav-pill.active { background: rgba(168,85,247,0.5); box-shadow: 0 0 15px rgba(168,85,247,0.4); }
+    .vote-btn { transition: all 0.2s; }
+    .vote-btn:hover:not(:disabled) { transform: scale(1.1); }
+    .vote-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+    .ticket-badge { background: linear-gradient(135deg, #f59e0b, #ef4444); animation: pulse-glow 2s ease-in-out infinite; }
+  </style>
+  <script src="/_sdk/6030e540d4419216.resizing_sdk.js" type="text/javascript" integrity="sha512-b5KWzyoXsbWP4smq4sftIi6Kts4YVBpBsz0BwCViwbBJkK64a3/Z6ZMdWA+qnplNcXw4mhZeqvQi3mOosiRJdA=="></script>
+</head>
+<body data-template-id="__page-root" class="min-h-screen text-white">
+  <div id="stars-container" aria-hidden="true"></div>
+  <div class="nebula-orb" style="width:300px;height:300px;background:radial-gradient(circle,#7c3aed,transparent);top:10%;right:-50px"></div>
+  <div class="nebula-orb" style="width:250px;height:250px;background:radial-gradient(circle,#ec4899,transparent);bottom:20%;left:-80px;animation-delay:4s"></div>
+  <div class="nebula-orb" style="width:200px;height:200px;background:radial-gradient(circle,#06b6d4,transparent);top:50%;right:20%;animation-delay:8s"></div><!-- NAVIGATION BAR -->
+  <nav id="main-nav" class="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 glass px-2 py-2 flex gap-1 rounded-2xl" style="backdrop-filter:blur(20px)">
+   <button type="button" class="nav-pill px-3 py-2 rounded-xl text-sm font-bold active" data-screen="screen-creator">🎭 شخصیت</button> <button type="button" class="nav-pill px-3 py-2 rounded-xl text-sm font-bold" data-screen="screen-clicker">⚡ کلیکر</button> <button type="button" class="nav-pill px-3 py-2 rounded-xl text-sm font-bold" data-screen="screen-arena">⚔️ رجز</button> <button type="button" class="nav-pill px-3 py-2 rounded-xl text-sm font-bold" data-screen="screen-coliseum">🏟️ کلیسیوم</button> <button type="button" class="nav-pill px-3 py-2 rounded-xl text-sm font-bold" data-screen="screen-gods">⚡ خدایان</button> <button type="button" class="nav-pill px-3 py-2 rounded-xl text-sm font-bold hidden" id="admin-nav-btn" data-screen="screen-admin">👑 مدیر</button>
+  </nav><!-- SCREEN 1: Character Creator -->
+  <main id="screen-creator" class="relative z-10 max-w-lg mx-auto p-4 pb-24">
+   <header class="text-center py-6 float-card">
+    <h1 data-template-id="page-title" class="canva-text text-3xl font-bold bg-gradient-to-l from-purple-400 via-fuchsia-300 to-cyan-300 bg-clip-text text-transparent drop-shadow-lg">Never Island</h1>
+    <p data-template-id="page-subtitle" class="canva-text mt-2">خلق شخصیت و مدیریت آیتم‌ها</p>
+   </header>
+   <section class="flex justify-center mb-6 float-card" style="animation-delay:0.3s">
+    <div class="relative">
+    <img data-template-id="avatar-placeholder" class="canva-image w-36 h-36 rounded-full object-cover avatar-glow" loading="lazy" src="/assets/operator-avatar.svg" onerror="this.src='/assets/operator-avatar.png'">
+     <p class="text-center text-xs text-gray-400 mt-2">تصویر را در کانوا تغییر دهید</p>
+    </div>
+   </section>
+   <section class="glass p-5 mb-6 float-card space-y-4" style="animation-delay:0.5s">
+    <div class="flex gap-2 mb-4">
+     <button type="button" id="toggle-avatar-gallery" class="flex-1 py-2 rounded-lg font-bold bg-gradient-to-r from-purple-600 to-purple-500 hover:from-purple-500 hover:to-purple-400 text-white transition-all text-sm" data-template-id="gallery-toggle-button">گالری</button> <button type="button" id="toggle-form" class="flex-1 py-2 rounded-lg font-bold bg-gray-600 hover:bg-gray-500 text-white transition-all text-sm">📋 فرم</button>
+    </div>
+    <div id="avatar-gallery-container" class="hidden">
+     <div class="mb-4 space-y-3">
+      <div class="flex gap-2"><button type="button" id="tab-gallery" class="flex-1 py-2 rounded-lg font-bold bg-purple-700 text-white transition-all">🖼️ گالری</button> <button type="button" id="tab-custom" class="flex-1 py-2 rounded-lg font-bold bg-gray-600 hover:bg-gray-500 text-white transition-all">🔗 لینک یا جستجو</button>
+
+</div>
+     </div>
+     <div id="gallery-view">
+      <p data-template-id="gallery-hint" class="canva-text text-xs mb-3 opacity-60">از گالری انتخاب کنید</p>
+      <div id="avatars-grid" class="grid grid-cols-5 gap-2 max-h-64 overflow-y-auto pb-2"></div>
+     </div>
+     <div id="custom-view" class="hidden space-y-3">
+      <div><label class="block text-sm font-bold text-purple-200 mb-2">🔗 لینک مستقیم عکس</label> <input id="custom-image-url" type="text" class="w-full bg-black/40 border border-purple-500/30 rounded-lg px-3 py-2 text-white placeholder-gray-500 focus:outline-none focus:border-purple-400 text-sm" placeholder="https://...">
+      </div>
+      <div id="custom-preview-container" class="hidden">
+       <p class="text-xs text-gray-400 mb-2">📷 پیش‌نمایش:</p><img id="custom-preview" class="w-full h-32 rounded-lg object-cover border border-purple-500/30">
+      </div><button type="button" id="btn-load-custom-image" class="w-full py-2 rounded-lg font-bold bg-gradient-to-r from-purple-600 to-purple-500 hover:from-purple-500 hover:to-purple-400 text-white transition-all text-sm">⬆️ بارگذاری عکس</button>
+      <div class="border-t border-purple-500/30 pt-3 mt-3">
+       <p class="text-xs text-gray-400 mb-2">🔍 یا جستجو از Pexels:</p>
+       <div class="flex gap-2"><input id="search-query" type="text" class="flex-1 bg-black/40 border border-purple-500/30 rounded-lg px-3 py-2 text-white placeholder-gray-500 focus:outline-none focus:border-purple-400 text-sm" placeholder="مثلاً: جنگاور فانتزی"> <button type="button" id="btn-search-pexels" class="px-3 py-2 rounded-lg font-bold bg-gradient-to-r from-cyan-600 to-blue-500 hover:from-cyan-500 hover:to-blue-400 text-white transition-all text-sm">🔍</button>
+       </div>
+      </div>
+      <div id="search-results" class="hidden mt-3 space-y-2">
+       <p class="text-xs text-gray-400">نتایج:</p>
+       <div id="search-results-grid" class="grid grid-cols-3 gap-2 max-h-48 overflow-y-auto"></div>
+      </div>
+     </div><button type="button" id="confirm-avatar-selection" class="w-full mt-3 py-2 rounded-lg font-bold bg-gradient-to-r from-cyan-600 to-blue-500 hover:from-cyan-500 hover:to-blue-400 text-white transition-all" data-template-id="confirm-avatar-button">تأیید</button>
+    </div>
+    <div id="form-container" class="space-y-4">
+     <div>
+      <label data-template-id="label-name" class="canva-text block mb-1 text-sm" for="char-name">نام شخصیت</label> <input id="char-name" type="text" class="w-full bg-black/40 border border-purple-500/30 rounded-lg px-3 py-2 text-white placeholder-gray-500 focus:outline-none focus:border-purple-400" data-template-id="input-name">
+     </div>
+     <div>
+      <label data-template-id="label-title" class="canva-text block mb-1 text-sm" for="char-title">عنوان</label> <input id="char-title" type="text" class="w-full bg-black/40 border border-purple-500/30 rounded-lg px-3 py-2 text-white placeholder-gray-500 focus:outline-none focus:border-purple-400" data-template-id="input-title">
+     </div>
+     <div>
+      <label data-template-id="label-planet" class="canva-text block mb-1 text-sm" for="char-planet">سیاره</label> <input id="char-planet" type="text" class="w-full bg-black/40 border border-purple-500/30 rounded-lg px-3 py-2 text-white placeholder-gray-500 focus:outline-none focus:border-purple-400" data-template-id="input-planet">
+     </div>
+     <div>
+      <label data-template-id="label-backstory" class="canva-text block mb-1 text-sm" for="char-backstory">داستان</label> <textarea id="char-backstory" rows="3" class="w-full bg-black/40 border border-purple-500/30 rounded-lg px-3 py-2 text-white placeholder-gray-500 focus:outline-none focus:border-purple-400 resize-none" data-template-id="input-backstory"></textarea>
+     </div>
+     <div>
+      <label data-template-id="label-dialogue" class="canva-text block mb-1 text-sm" for="char-dialogue">دیالوگ</label> <textarea id="char-dialogue" rows="2" class="w-full bg-black/40 border border-purple-500/30 rounded-lg px-3 py-2 text-white placeholder-gray-500 focus:outline-none focus:border-purple-400 resize-none"
+
+data-template-id="input-dialogue"></textarea>
+     </div>
+     <div>
+      <label data-template-id="label-class" class="canva-text block mb-1 text-sm" for="char-class">کلاس</label> <select id="char-class" class="w-full bg-black/40 border border-purple-500/30 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-purple-400" data-template-id="input-class"> <option value="">انتخاب کنید...</option> <option value="جنگاور">⚔️ جنگاور</option> <option value="شفادهنده">💚 شفادهنده</option> <option value="قاتل">🗡️ قاتل</option> <option value="احضارگر">🔮 احضارگر</option> <option value="مخترع">⚙️ مخترع</option> <option value="محافظ">🛡️ محافظ</option> </select>
+     </div>
+    </div>
+   </section>
+   <section class="glass p-5 mb-6 float-card" style="animation-delay:0.8s">
+    <h2 data-template-id="inventory-heading" class="canva-text text-lg font-bold mb-3">مخزن</h2>
+    <div id="inventory-container" class="grid grid-cols-3 gap-2">
+     <div class="bg-black/40 border border-purple-500/20 rounded-lg p-2 text-center text-xs text-gray-400">
+      خالی
+     </div>
+    </div>
+   </section>
+   <section class="glass p-5 mb-6 float-card" style="animation-delay:0.7s">
+    <div class="flex justify-between items-center mb-4">
+     <h2 data-template-id="stats-heading" class="canva-text text-lg font-bold">آمار</h2><span class="bg-purple-900/60 border border-purple-500/40 rounded-full px-3 py-1 text-sm font-bold text-cyan-300" id="available-points">10</span>
+    </div>
+    <div class="space-y-2" id="stats-container"></div>
+   </section>
+   <div class="float-card" style="animation-delay:0.9s">
+    <button data-template-id="save-button" class="canva-button w-full py-3 rounded-xl font-bold text-lg btn-neon transition-all" id="save-btn" type="button">ذخیره</button>
+    <p id="status-msg" class="text-center mt-3 text-sm text-green-400 hidden"></p>
+   </div>
+  </main><!-- SCREEN 2: Clicker -->
+  <main id="screen-clicker" class="relative z-10 max-w-lg mx-auto p-4 pb-24 hidden" style="min-height:calc(100 * min(var(--vh,1vh),1vh))">
+   <div class="flex flex-col items-center" style="min-height:calc(85 * min(var(--vh,1vh),1vh))">
+    <div class="w-full glass p-3 flex justify-between items-center mb-3">
+     <div class="text-center">
+      <p data-template-id="clicker-ce-label" class="canva-text text-xs opacity-70">CE</p>
+      <p class="text-xl font-bold text-cyan-300" id="ce-display">0</p>
+     </div>
+     <div class="text-center">
+      <p class="text-sm font-bold text-purple-300" id="rank-display">رنک 0</p>
+      <p class="text-xs text-gray-400" id="rank-progress"></p>
+     </div>
+     <div class="text-center">
+      <p data-template-id="clicker-pertap-label" class="canva-text text-xs opacity-70">در هر کلیک</p>
+      <p class="text-lg font-bold text-green-300" id="pertap-display">+1</p>
+     </div>
+    </div>
+    <div class="w-full mb-3">
+     <div class="flex justify-between text-xs mb-1">
+      <span data-template-id="energy-label" class="canva-text">انرژی</span> <span id="energy-text" class="text-cyan-200">500/500</span>
+     </div>
+     <div class="w-full h-3 rounded-full bg-black/50 border border-purple-500/30 overflow-hidden">
+      <div id="energy-bar" class="h-full bg-gradient-to-l from-cyan-400 to-purple-500 rounded-full transition-all duration-200" style="width:100%"></div>
+     </div>
+     <p class="text-xs text-gray-400 mt-1" id="timer-text"></p>
+    </div>
+    <p class="text-lg font-bold text-purple-200 mb-2" id="clicker-char-name">—</p>
+    <div class="relative flex items-center justify-center flex-1 w-full">
+     <div id="orbit-container" class="absolute" style="width:260px;height:260px"></div>
+     <div id="tap-area" class="relative clicker-avatar">
+      <img data-template-id="clicker-avatar" class="canva-image w-48 h-48 rounded-full object-cover shadow-[0_0_40px_rgba(168,85,247,0.6)]" loading="lazy" src="/assets/clicker-avatar.svg" onerror="this.src='/assets/clicker-avatar.png'">
+
+<div id="particle-container" class="absolute inset-0 pointer-events-none"></div>
+     </div>
+     <div id="float-container" class="absolute inset-0 pointer-events-none"></div>
+    </div>
+    <p data-template-id="clicker-hint" class="canva-text text-center mt-4 mb-3 opacity-60 text-sm">روی آواتار بزنید</p>
+    <div class="w-full glass p-4 mb-4 space-y-3">
+     <h3 data-template-id="upgrades-heading" class="canva-text text-center font-bold mb-2">ارتقاها</h3>
+     <div class="flex items-center justify-between stat-bar rounded-lg px-3 py-2">
+      <div>
+       <span data-template-id="upgrade-tap-label" class="canva-text text-sm">قدرت کلیک</span> <span class="text-xs text-gray-400 mr-2" id="tap-level-text">Lv.1</span>
+      </div><button type="button" class="upgrade-btn bg-purple-600 hover:bg-purple-500 text-white text-xs px-3 py-1 rounded-lg font-bold transition-colors" id="btn-upgrade-tap">ارتقا</button>
+     </div>
+     <div class="flex items-center justify-between stat-bar rounded-lg px-3 py-2">
+      <div>
+       <span data-template-id="upgrade-energy-label" class="canva-text text-sm">ظرفیت انرژی</span> <span class="text-xs text-gray-400 mr-2" id="energy-level-text">Lv.1</span>
+      </div><button type="button" class="upgrade-btn bg-purple-600 hover:bg-purple-500 text-white text-xs px-3 py-1 rounded-lg font-bold transition-colors" id="btn-upgrade-energy">ارتقا</button>
+     </div>
+     <div class="flex items-center justify-between stat-bar rounded-lg px-3 py-2">
+      <div>
+       <span data-template-id="upgrade-timer-label" class="canva-text text-sm">کاهش تایمر</span> <span class="text-xs text-gray-400 mr-2" id="timer-level-text">Lv.1</span>
+      </div><button type="button" class="upgrade-btn bg-purple-600 hover:bg-purple-500 text-white text-xs px-3 py-1 rounded-lg font-bold transition-colors" id="btn-upgrade-timer">ارتقا</button>
+     </div>
+    </div><button type="button" id="edit-profile-btn" class="w-full py-2 rounded-lg font-bold btn-neon transition-all bg-gradient-to-l from-cyan-600 to-blue-500 text-white" data-template-id="edit-profile-button">ویرایش پروفایل</button>
+   </div>
+  </main><!-- SCREEN 3: Trash Talk Arena -->
+  <main id="screen-arena" class="relative z-10 max-w-lg mx-auto p-4 pb-24 hidden">
+   <header class="text-center py-4">
+    <h1 data-template-id="arena-title" class="canva-text text-2xl font-bold bg-gradient-to-l from-red-400 via-orange-300 to-yellow-300 bg-clip-text text-transparent">ارنا</h1>
+    <p data-template-id="arena-subtitle" class="canva-text mt-1 text-sm">چالش‌ها و پاسخ‌ها</p>
+   </header>
+   <section class="glass p-5 mb-5 glow-border">
+    <div class="flex items-center gap-4 mb-3">
+    <img data-template-id="npc-image" class="canva-image w-20 h-20 rounded-full object-cover avatar-glow" loading="lazy" src="/assets/npc.svg" onerror="this.src='/assets/npc.png'">
+     <div>
+      <p class="font-bold text-lg text-red-300" id="npc-name-display">—</p>
+      <p class="text-xs text-gray-400" id="npc-week-display"></p>
+     </div>
+    </div>
+    <div class="bg-black/30 rounded-lg p-3 mb-3">
+     <p data-template-id="npc-backstory-label" class="canva-text text-xs mb-1 opacity-60">پیشینه</p>
+     <p class="text-sm text-gray-200" id="npc-backstory-display">—</p>
+    </div>
+    <div class="bg-red-900/20 border border-red-500/30 rounded-lg p-3">
+     <p data-template-id="npc-dialogue-label" class="canva-text text-xs mb-1 opacity-60">گفت‌وگو</p>
+     <p class="text-lg font-bold text-red-200 italic" id="npc-dialogue-display">"..."</p>
+    </div>
+   </section>
+   <section class="glass p-4 mb-5">
+    <label data-template-id="response-label" class="canva-text block mb-2 text-sm font-bold" for="trash-talk-input">پاسخ شما</label> <textarea id="trash-talk-input" rows="2" class="w-full bg-black/40 border border-purple-500/30 rounded-lg px-3 py-2 text-white placeholder-gray-500 focus:outline-none focus:border-purple-400 resize-none" placeholder="جواب رجزت رو بنویس..."></textarea> <button type="button" id="submit-response-btn" class="w-full mt-3 py-2 rounded-lg font-bold btn-neon transition-all bg-gradient-to-l from-red-600 to-orange-500 text-white" data-template-id="submit-response-button">ارسال</button>
+
+</section>
+   <section class="mb-5">
+    <h2 data-template-id="responses-heading" class="canva-text text-lg font-bold mb-3">پاسخ‌ها</h2>
+    <div id="responses-list" class="space-y-3"></div>
+   </section>
+  </main>
+
+  <script type="module" src="/src/app.js"></script>
+</body>
+</html>
